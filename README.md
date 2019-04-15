@@ -5,4 +5,6 @@ The current module deletes the id's of a relational i2b2-schema database while p
 
 new_id = MD5(id + random_number)
 
+For the case where the data are already in CSV we randomly hash the id column.
+
 Currently the hashing function that is being used is MD5. In the future we may use others like SHA256, SHA512. Postgres provides several crypto functions (https://www.postgresql.org/docs/9.4/pgcrypto.html), therefore MD5 can be easily replaced by a more secure one. On the other hand, even if someone manages to decrypt (dehash) she will get the sum of the id and a random_number and not the id itself.
