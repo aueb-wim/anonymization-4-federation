@@ -2,37 +2,63 @@
 import sys
 import csv
 import hashlib
+import argparse
 from copy import copy
 from random import *
 
 def hash_id(str_id):
-	random_num = float(str_id) + random()*100
-	random_num_str = str(random_num).encode()
+	#  case where str_id is not a number
+	try:
+		random_num = float(str_id) + random()*100
+		random_num_str = str(random_num).encode()
+	except:
+		random_num_str = str_id + str(random()*100)
+		random_num_str = random_num_str.encode()
+	
 	random_hash_str = hashlib.md5(random_num_str)
-	print("Row num:", str_id, "Random num: ", random_num, "Random Hash: ", random_hash_str.hexdigest())
+	print("Row num:", str_id, "Random num: ", random_num_str, "Random Hash: ", random_hash_str.hexdigest())
 	return random_hash_str.hexdigest()
 
 
-print("We will anonymize file ", sys.argv[1], " assuming its first column is its id.")
-lookup_id = {}
-csv_new = []
-with open(sys.argv[1], mode='r') as csv_file:
-	csv_reader = csv.reader(csv_file, delimiter=',')
-	line=0
-	for row in csv_reader:
-		new_row = copy(row)
-		if line==0: #first row has the headers...
-			csv_new.append(row)
-			print("First row: Headers...")		
-		else:
-			lookup_id.setdefault(row[0], hash_id(row[0]))
-			new_row[0] = lookup_id[row[0]]
-			csv_new.append(new_row)
-		line += 1
-with open(sys.argv[2], mode= 'w') as csv_file:
-	csv_writer = csv.writer(csv_file, delimiter=',')
-	for row in csv_new:
-		csv_writer.writerow(row)
+def anonymize_csv(inputpath, outputpath, columns):
+	print("We will anonymize file ", inputpath, " assuming its first column is its id.")
+	lookup_id = {}
+	csv_new = []
+	with open(inputpath, mode='r') as csv_file:
+		csv_reader = csv.reader(csv_file, delimiter=',')
+		line=0
+		for row in csv_reader:
+			new_row = copy(row)
+			if line==0: #first row has the headers...
+				csv_new.append(row)
+				print("First row: Headers...")		
+			else:
+				for column in columns:
+				    lookup_id.setdefault(row[column], hash_id(row[column]))
+				    new_row[column] = lookup_id[row[column]]
+				csv_new.append(new_row)
+			line += 1
+	with open(outputpath, mode= 'w') as csv_file:
+		csv_writer = csv.writer(csv_file, delimiter=',')
+		for row in csv_new:
+			csv_writer.writerow(row)
 
 
-    
+def main():
+	"CLI for anonymazation script"
+	# Create a parser
+	parser = argparse.ArgumentParser(description='Script for anonymization \
+                                     of hospital EHR csv.') 
+	parser.add_argument('inputpath', type=str,
+					help='initial ehr csv to be anonymized')
+	parser.add_argument('outputpath', type=str,
+	                    help='pathanonymized csv filepath')
+	parser.add_argument('-c', '--columns', type=int, nargs='*', default=[1])
+	args = parser.parse_args(sys.argv[1:])
+	# substracting 1 to have python correct list indexes
+	columns = [x - 1 for x in args.columns]
+	# call the anonymiza function 
+	anonymize_csv(args.inputpath, args.outputpath, columns)
+
+if __name__ == '__main__':
+	main()

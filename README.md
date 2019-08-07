@@ -8,3 +8,13 @@ new_id = MD5(id + random_number)
 For the case where the data are already in CSV we randomly hash the id column.
 
 Currently the hashing function that is being used is MD5. In the future we may use others like SHA256, SHA512. Postgres provides several crypto functions (https://www.postgresql.org/docs/9.4/pgcrypto.html), therefore MD5 can be easily replaced by a more secure one. On the other hand, even if someone manages to decrypt (dehash) she will get the sum of the id and a random_number and not the id itself.
+
+## Python script usage
+Give the command in terminal
+```shell
+python anonymize_csv.py <inputcsvpath> <outputcsvpath>
+```
+**Options**
+
+- `-c` or `--columns` - 
+By default the script will hash the first column of the input csv. If we want to hash certain columns, i.e. 2nd and 3rd column, we add `-c 2 3` or `--columns 2 3`.
