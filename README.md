@@ -1,14 +1,15 @@
 # anonymization-4-federation
 Anonymizing data by hashing id's while using randomly generated numbers
 
-The current module deletes the id's of a relational i2b2-schema database while preserving the entities' resolution and relationships among them. Having as input an i2b2 database, the output is a replicated database with randomly generated patient and encounter id's which are not possible to be linked to the input db's id's. This applies in both ways, meaning the output id's cannot be re-generated in the same way therefore cannot be linked to those of an already anonymized database. To succeed that, we add to each id a random_number from 1 to 100 and then we hash it.
+The current process deletes the id's of a relational i2b2-schema database while preserving the entities' resolution and relationships among them. Having as input an i2b2 database, the output is a replicated database with randomly generated patient and encounter id's which are not possible to be linked to the input db's id's. This applies in both ways, meaning the output id's cannot be re-generated in the same way therefore cannot be linked to those of an already anonymized database. To succeed that, we add to each id a random_number from 1 to 100 and then we hash it.
 
 new_id = MD5(id + random_number) or 
 new_id = SHA3_224(id + random_number)
 
-For the case where the data are already in CSV we randomly hash the id column.
+For the case where the data are already in CSV we randomly hash the id column with python.
 
-Currently the hashing function that is being used is MD5 and SHA3-224. In the future we may use others like SHA256, SHA512. Postgres provides several crypto functions (https://www.postgresql.org/docs/9.4/pgcrypto.html), therefore MD5 can be easily replaced by a more secure one. On the other hand, even if someone manages to decrypt (dehash) she will get the sum of the id and a random_number and not the id itself.
+The hashing function that is used is MD5 or SHA3-224. We may use others like SHA256, SHA512. Postgres (as well as python) provides several crypto functions (https://www.postgresql.org/docs/9.4/pgcrypto.html), therefore we can easily choose the one we prefer and consider to be more secure. 
+Keep in mind that even if someone manages to decrypt (de-hash) she will get the sum of the id and a random_number and not the id itself; therefore even in that extreme scenario there will be no linkage to the original tuple via the id.
 
 ## Python script usage
 Give the command in terminal
