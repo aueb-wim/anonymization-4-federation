@@ -8,7 +8,7 @@ new_id = SHA3_224(id + random_number)
 
 For the case where the data are already in CSV we randomly hash the id column with python.
 
-The hashing function that is used is MD5 or SHA3-224. We may use others like SHA256, SHA512. Postgres (as well as python) provides several crypto functions (https://www.postgresql.org/docs/9.4/pgcrypto.html), therefore we can easily choose the one we prefer and consider to be more secure. 
+The hashing function that is used is MD5 or SHA3-224. We may use others like SHA3-256, SHA3-512. Postgres (as well as python) provides several crypto functions (https://www.postgresql.org/docs/9.4/pgcrypto.html), therefore we can easily choose the one we prefer and consider to be more secure. 
 Keep in mind that even if someone manages to decrypt (de-hash) she will get the sum of the id and a random_number and not the id itself; therefore even in that extreme scenario there will be no linkage to the original tuple via the id.
 
 ## Python script usage
