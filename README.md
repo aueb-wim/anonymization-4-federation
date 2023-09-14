@@ -24,3 +24,6 @@ By default the script will hash the first column of the input csv. If we want to
 
 - `-m` or `--method` -
 The hash function that will be used. Select between `md5` and `sha3`. As default is the `sha3` method.
+
+## Acknowledgements
+This project/research received funding from the European Union’s Horizon 2020 Framework Programme for Research and Innovation under the Framework Partnership Agreement No. 650003 (HBP FPA).
